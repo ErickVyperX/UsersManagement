@@ -13,6 +13,16 @@ public class ConnectionMySQL {
         return connection;
     }
 
+    public static void close(PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.close();
+        connection = null;
+    }
+
+    public static void close(Connection conn) throws SQLException {
+        conn.close();
+        connection = null;
+    }
+
     public static void close(PreparedStatement preparedStatement, Connection conn) throws SQLException {
         preparedStatement.close();
         conn.close();

@@ -8,6 +8,10 @@ public interface IDataAccess {
 
     List<User> select() throws SQLException;
 
+    User selectById(User user) throws SQLException;
+
+    User selectByUsername(User user) throws SQLException;
+
     int insert(User user) throws SQLException;
 
     int update(String newPassword, User user) throws SQLException;

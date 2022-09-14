@@ -4,7 +4,7 @@ import data.UserDAO;
 import domain.User;
 import exceptions.*;
 import java.sql.SQLException;
-import java.util.List;
+import static data.UserDAO.*;
 
 public class UserManagement {
 
@@ -13,7 +13,7 @@ public class UserManagement {
         try {
             userDAO.select().forEach(user -> System.out.println(user.toString()));
         } catch (SQLException e) {
-            throw new DataReadingException("There was a problem to access the database" + e.getMessage());
+            throw new DataReadingException("There was a problem to access the database " + e.getMessage());
         }
     }
 
@@ -21,11 +21,25 @@ public class UserManagement {
         User user = new User(username, password);
         UserDAO userDAO = new UserDAO();
         try {
-            if (userDAO.insert(user) == 1) {
+            User userFound = userDAO.selectByUsername(user);
+            if (userFound != null) {
+                userDAO = new UserDAO(false);
+                userDAO.delete(userFound);
+                userDAO.insert(user);
+                commit();
+                closeTransactionConnection();
+                System.out.println("Transaction completed. User registered successfully!");
+            } else if (userDAO.insert(user) == 1) {
                 System.out.println("User registered successfully!");
             }
         } catch (SQLException e) {
-            throw new DataWritingException("There was a problem trying to add a user!" + e.getMessage());
+            try {
+                rollback();
+                System.out.println("Transaction not completed!");
+            } catch (SQLException ex) {
+                throw new DataWritingException(ex.getMessage());
+            }
+            throw new DataWritingException("There was a problem trying to add a user! " + e.getMessage());
         }
     }
 
@@ -41,21 +55,18 @@ public class UserManagement {
                 System.out.println("Password not changed. Because ID user is incorrect!");
             }
         } catch (SQLException e) {
-            throw new DataWritingException("There was a problem trying to modify a user!" + e.getMessage());
+            throw new DataWritingException("There was a problem trying to modify a user! " + e.getMessage());
         }
     }
 
     public boolean foundUser(User user) throws DataReadingException {
         UserDAO userDAO = new UserDAO();
         try {
-            List<User> users = userDAO.select();
-            for (User user1 : users) {
-                if (user.getIdUser() == user1.getIdUser()) {
-                    return true;
-                }
+            if (userDAO.selectById(user) != null) {
+                return true;
             }
         } catch (SQLException e) {
-            throw new DataReadingException("There was a problem to find the user!" + e.getMessage());
+            throw new DataReadingException("There was a problem to find the user! " + e.getMessage());
         }
         return false;
     }
@@ -72,7 +83,7 @@ public class UserManagement {
                 System.out.println("User not deleted. Because it doesn't exists!");
             }
         } catch (SQLException e) {
-            throw new DataWritingException("There was a problem trying to delete a user!" + e.getMessage());
+            throw new DataWritingException("There was a problem trying to delete a user! " + e.getMessage());
         }
     }
 }
