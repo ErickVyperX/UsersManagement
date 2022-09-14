@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UserManagement {
 
-    public void listUsers() throws DatabaseConnectionException {
+    public void listUsers() throws DataReadingException {
         UserDAO userDAO = new UserDAO();
         try {
             userDAO.select().forEach(user -> System.out.println(user.toString()));
@@ -40,13 +40,12 @@ public class UserManagement {
             } else {
                 System.out.println("Password not changed. Because ID user is incorrect!");
             }
-
         } catch (SQLException e) {
             throw new DataWritingException("There was a problem trying to modify a user!" + e.getMessage());
         }
     }
 
-    public boolean foundUser(User user) throws DatabaseConnectionException {
+    public boolean foundUser(User user) throws DataReadingException {
         UserDAO userDAO = new UserDAO();
         try {
             List<User> users = userDAO.select();
