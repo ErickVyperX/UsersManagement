@@ -1,15 +1,16 @@
 package management;
 
 import data.UserDAO;
+import data.UserDaoJDBC;
 import domain.User;
 import exceptions.*;
 import java.sql.SQLException;
-import static data.UserDAO.*;
+import static data.UserDaoJDBC.*;
 
-public class UserManagement {
+public class UserManagementJDBC {
 
     public void listUsers() throws DataReadingException {
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = new UserDaoJDBC();
         try {
             userDAO.select().forEach(user -> System.out.println(user.toString()));
         } catch (SQLException e) {
@@ -19,11 +20,11 @@ public class UserManagement {
 
     public void addUser(String username, String password) throws DataWritingException {
         User user = new User(username, password);
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = new UserDaoJDBC();
         try {
             User userFound = userDAO.selectByUsername(user);
             if (userFound != null) {
-                userDAO = new UserDAO(false);
+                userDAO = new UserDaoJDBC(false);
                 userDAO.delete(userFound);
                 userDAO.insert(user);
                 commit();
@@ -45,7 +46,7 @@ public class UserManagement {
 
     public void setPassword(String newPassword, int idUser) throws DataWritingException {
         User user = new User(idUser);
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = new UserDaoJDBC();
         try {
             if (foundUser(user)) {
                 if (userDAO.update(newPassword, user) == 1) {
@@ -60,7 +61,7 @@ public class UserManagement {
     }
 
     public boolean foundUser(User user) throws DataReadingException {
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = new UserDaoJDBC();
         try {
             if (userDAO.selectById(user) != null) {
                 return true;
@@ -72,7 +73,7 @@ public class UserManagement {
     }
 
     public void deleteUser(int idUser) throws DataWritingException {
-        UserDAO userDAO = new UserDAO();
+        UserDAO userDAO = new UserDaoJDBC();
         User user = new User(idUser);
         try {
             if (foundUser(user)) {

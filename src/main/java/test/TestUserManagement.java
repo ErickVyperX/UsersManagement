@@ -1,7 +1,7 @@
 package test;
 
 import exceptions.DatabaseConnectionException;
-import management.UserManagement;
+import management.UserManagementJDBC;
 import java.util.Scanner;
 
 public class TestUserManagement {
@@ -9,7 +9,7 @@ public class TestUserManagement {
         Scanner scanner = new Scanner(System.in);
         int option, idUser;
         String username, newPassword, lineOption;
-        UserManagement userManagement = new UserManagement();
+        UserManagementJDBC userManagementJDBC = new UserManagementJDBC();
         do {
             System.out.println("""
                     Welcome to your Password Manager. Please, enter a number option:
@@ -23,25 +23,25 @@ public class TestUserManagement {
                     ? Integer.parseInt(lineOption)
                     : -1;
             switch (option) {
-                case 1 -> userManagement.listUsers();
+                case 1 -> userManagementJDBC.listUsers();
                 case 2 -> {
                     System.out.println("Enter a username: ");
                     username = scanner.nextLine();
                     System.out.println("Enter a password: ");
                     newPassword = scanner.nextLine();
-                    userManagement.addUser(username, newPassword);
+                    userManagementJDBC.addUser(username, newPassword);
                 }
                 case 3 -> {
                     System.out.println("Enter the User ID: ");
                     idUser = Integer.parseInt(scanner.nextLine());
                     System.out.println("Enter the new password: ");
                     newPassword = scanner.nextLine();
-                    userManagement.setPassword(newPassword, idUser);
+                    userManagementJDBC.setPassword(newPassword, idUser);
                 }
                 case 4 -> {
                     System.out.println("Enter the User ID: ");
                     idUser = Integer.parseInt(scanner.nextLine());
-                    userManagement.deleteUser(idUser);
+                    userManagementJDBC.deleteUser(idUser);
                 }
                 case 5 -> System.out.println("Bye Bye!");
                 default -> System.out.println("Invalid Option!");
