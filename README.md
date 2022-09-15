@@ -6,7 +6,7 @@ ___
 
 - The database was made in MySQL. The script is in `resources` package.
 - Using dependencies with Maven
-- Using Design Patterns: DAO, Singleton
+- Using Design Patterns: DAO, DTO, Singleton
 - Using transaction for `addUser()`  method
 - Using custom Exceptions classes
 
